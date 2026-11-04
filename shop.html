@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="author" content="Kelvin Kennedy" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Order crisps, muffins, samosas, popcorn and sweet treats online. Delivery across Kenya. Pay with M-Pesa, card or cash on delivery."
+    />
+    <meta name="theme-color" content="#e8344e" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%BF%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/hover.css" />
+    <link rel="stylesheet" href="css/rounded.css" />
+    <link rel="stylesheet" href="css/slideshow.css" />
+    <link rel="stylesheet" href="css/extras.css" />
+    <title>Shop | A Plus Snacks</title>
+  </head>
+  <body>
+    <div class="ann" id="ann" hidden></div>
+    <header id="top">
+      <div class="wrap bar">
+        <a class="logo" href="index.html" id="logo">A Plus Snacks</a>
+        <nav class="nav" id="nav" aria-label="Main">
+          <a href="index.html">Home</a>
+          <a href="#shop" class="on">Products</a>
+          <a href="about.html">About</a>
+          <a href="#contact">Contact</a>
+          <a href="#account" data-account="1">Account</a>
+        </nav>
+        <button class="cartbtn" id="openCart" aria-label="Open cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L20 7H6"/></svg>
+          <span class="cartlabel">Cart</span>
+          <span class="count" id="count">0</span>
+        </button>
+        <button
+          class="menubtn"
+          id="menuBtn"
+          aria-label="Menu"
+          aria-expanded="false"
+          aria-controls="nav"
+        >
+          <i></i>
+        </button>
+      </div>
+    </header>
+
+    <main>
+        <section id="shop" class="wrap shop">
+        <h2 class="sec">Shop all</h2>
+        <div class="tools">
+          <div class="chips" id="chips"></div>
+          <div class="tools-r">
+            <input
+              class="search"
+              id="q"
+              type="search"
+              placeholder="Search products"
+              aria-label="Search products"
+            />
+            <select class="sort" id="sort" aria-label="Sort products">
+              <option value="featured">Sort: Featured</option>
+              <option value="low">Price: low to high</option>
+              <option value="high">Price: high to low</option>
+              <option value="az">Name: A to Z</option>
+            </select>
+          </div>
+        </div>
+        <p class="results" id="results" aria-live="polite"></p>
+        <div class="grid" id="grid" aria-busy="true">
+          <div class="skel">
+            <i></i>
+            <b></b>
+          </div>
+          <div class="skel">
+            <i></i>
+            <b></b>
+          </div>
+          <div class="skel">
+            <i></i>
+            <b></b>
+          </div>
+          <div class="skel">
+            <i></i>
+            <b></b>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- PRODUCT PHOTOS: one <img> per product. Change src to swap a photo, alt for the text shown if it can't load.
+     data-name = word(s) found in the product name (first match wins). Photos uploaded in the admin override these. -->
+    <template id="photos">
+      <img data-name="platter" src="images/slides/snack1.jpg" alt="Snack platter" />
+      <img data-name="fritter" src="images/slides/snack9.jpg" alt="Golden fritters" />
+      <img data-name="ringo|corn ring" src="images/slides/snack13.jpg" alt="Corn rings" />
+      <img data-name="samosa" src="images/slides/snack8.jpg" alt="Samosas" />
+      <img data-name="muffin|cupcake" src="images/slides/snack7.jpg" alt="Vanilla muffins" />
+      <img data-name="mandazi|mahamri|doughnut|donut" src="images/slides/snack9.jpg" alt="Mandazi" />
+      <img data-name="popcorn" src="images/slides/snack3.jpg" alt="Popcorn bucket" />
+      <img data-name="crisp" src="images/slides/snack5.jpg" alt="Salted crisps" />
+      <img data-name="wing" src="images/slides/snack14.jpg" alt="Chicken wings" />
+      <img data-name="chicken|drumstick" src="images/slides/snack15.jpg" alt="Fried chicken" />
+      <img data-name="chip|fries" src="images/slides/snack6.jpg" alt="Hot chips" />
+      <img data-name="heart" src="images/slides/snack11.jpg" alt="Heart lollipops" />
+      <img data-name="lolli|sucker" src="images/slides/snack12.jpg" alt="Lollipops" />
+      <img data-name="choc" src="images/slides/snack10.jpg" alt="Chocolate minis" />
+      <img data-name="cheese|curl|puff|nik" src="images/slides/snack2.jpg" alt="Crunchy puffs" />
+      <img data-name="beef|steak" src="images/slides/snack16.jpg" alt="Packed beef steaks" />
+      <img data-name="meat|ribeye|sirloin" src="images/slides/snack17.jpg" alt="Fresh cuts of beef" />
+    </template>
+
+    <!-- ── SOCIAL ICONS ── -->
+    <section class="social-section" id="contact">
+      <p class="social-label">Follow &amp; Connect</p>
+      <div class="social-container">
+        <!-- Email is hidden until a real link is added. Replace the placeholder, then remove the comment marks.
+        <div class="icon-item">
+          <a href="mailto:YOUR_EMAIL@example.com" class="icon-box mail" aria-label="Email us">
+            <div class="tooltip">Email Us</div>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="M3 7l9 6 9-6" />
+            </svg>
+          </a>
+          <span class="icon-name">Email</span>
+        </div>
+        -->
+
+        <!-- Facebook is hidden until a real link is added. Replace the placeholder, then remove the comment marks.
+        <div class="icon-item">
+          <a
+            href="https://www.facebook.com/YOUR_FACEBOOK_PAGE"
+            target="_blank"
+            rel="noopener"
+            class="icon-box facebook"
+            aria-label="Facebook"
+          >
+            <div class="tooltip">Facebook</div>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.3H7.5V13h2.8v8h3.2z"
+              />
+            </svg>
+          </a>
+          <span class="icon-name">Facebook</span>
+        </div>
+        -->
+
+        <!-- Instagram is hidden until a real link is added. Replace the placeholder, then remove the comment marks.
+        <div class="icon-item">
+          <a
+            href="https://www.instagram.com/YOUR_INSTAGRAM_HANDLE"
+            target="_blank"
+            rel="noopener"
+            class="icon-box instagram"
+            aria-label="Instagram"
+          >
+            <div class="tooltip">Instagram</div>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+            </svg>
+          </a>
+          <span class="icon-name">Instagram</span>
+        </div>
+        -->
+
+        <div class="icon-item">
+          <a
+            id="waLink"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            class="icon-box whatsapp"
+            aria-label="Chat on WhatsApp"
+          >
+            <div class="tooltip">WhatsApp</div>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" />
+              <path
+                d="M9 8.5c.3 2.6 2.9 5.2 5.5 5.5l1.4-1.4-2-1-.9.8c-.9-.4-1.8-1.3-2.2-2.2l.8-.9-1-2L9 8.5z"
+              />
+            </svg>
+          </a>
+          <span class="icon-name">WhatsApp</span>
+        </div>
+
+        <div class="icon-item">
+          <a
+            href="https://www.google.com/maps/search/?api=1&amp;query=-1.108793,36.640887"
+            target="_blank"
+            rel="noopener"
+            class="icon-box location"
+            aria-label="Get Directions"
+          >
+            <div class="tooltip">Get Directions</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          </a>
+          <span class="icon-name">Location</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="site-foot">
+      <span id="footer">&copy; 2026 A Plus Snacks. All rights reserved.</span>
+    </footer>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div class="scrim" id="scrim"></div>
+    <aside id="drawer" aria-label="Shopping cart" aria-hidden="true">
+      <div class="dh">
+        <h2 id="dtitle">Your cart</h2>
+        <button class="btn ghost" id="closeCart">Close</button>
+      </div>
+      <div class="db" id="db"></div>
+    </aside>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
