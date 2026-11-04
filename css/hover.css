@@ -1,0 +1,122 @@
+
+:root {
+  --hover-accent: #e8344e;                 /* highlight colour */
+  --hover-lift:   -6px;                    /* how far cards rise */
+  --hover-speed:  .2s;                     /* transition speed */
+  --hover-shadow: 0 14px 30px rgba(0, 0, 0, .15);
+}
+
+
+/* 
+   Colour and shadow effects (on mouse hover)
+   Only on devices with a real mouse, so phones don't get "stuck" hovers.
+   -------------------------------------------------------------------------- */
+@media (hover: hover) {
+
+  /* Navigation and footer links */
+  .nav a:hover,
+  footer a:hover {
+    color: var(--hover-accent);
+  }
+
+  /* Logo */
+  .logo:hover {
+    opacity: .8;
+  }
+
+  /* Buttons ("Shop now", "Close", checkout buttons) */
+  .btn:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+  }
+
+  .btn.ghost:hover {
+    background: rgba(232, 52, 78, .08);
+    border-color: var(--hover-accent);
+    color: var(--hover-accent);
+    filter: none;
+    box-shadow: none;
+  }
+
+  /* Category chips above the product grid */
+  .chips > *:hover {
+    border-color: var(--hover-accent);
+    color: var(--hover-accent);
+  }
+
+  /* Search box */
+  .search:hover {
+    border-color: var(--hover-accent);
+  }
+
+  /* Product cards (works whatever class the cards use) */
+  .grid > *:hover {
+    box-shadow: var(--hover-shadow);
+  }
+
+  /* "Pay your way" style info columns */
+  .about .cols > div:hover {
+    box-shadow: var(--hover-shadow);
+  }
+}
+
+
+/* 
+   Movement effects (lift, zoom, press)
+   Skipped for visitors who ask their device to reduce motion.
+   -------------------------------------------------------------------------- */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+
+  /* Smooth transitions */
+  .nav a,
+  footer a,
+  .logo,
+  .btn,
+  .chips > *,
+  .search,
+  .cartbtn,
+  .grid > *,
+  .grid img,
+  .about .cols > div {
+    transition:
+      transform var(--hover-speed) ease,
+      box-shadow var(--hover-speed) ease,
+      color var(--hover-speed) ease,
+      background-color var(--hover-speed) ease,
+      border-color var(--hover-speed) ease,
+      filter var(--hover-speed) ease,
+      opacity var(--hover-speed) ease;
+  }
+
+  /* Cart icon grows slightly */
+  .cartbtn:hover {
+    transform: scale(1.1);
+  }
+
+  /* Buttons rise, then press down when clicked */
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn:active {
+    transform: translateY(0) scale(.97);
+  }
+
+  /* Product cards rise and the photo zooms inside the card */
+  .grid > * {
+    overflow: hidden;                      /* keeps the zoomed photo inside the card */
+  }
+
+  .grid > *:hover {
+    transform: translateY(var(--hover-lift));
+  }
+
+  .grid > *:hover img {
+    transform: scale(1.06);
+  }
+
+  /* Info columns lift a little */
+  .about .cols > div:hover {
+    transform: translateY(-4px);
+  }
+}
