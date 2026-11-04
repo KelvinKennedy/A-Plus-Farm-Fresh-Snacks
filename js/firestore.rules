@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Must match ADMIN_EMAIL in js/config.js (lowercase)
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'ototokelvin180@gmail.com';
+    }
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    /* Orders: guests can place them, only the admin can read or change them.
+       app.js also sends uid and email (null for guests), so they are allowed here. */
+    function validOrder() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['orderNo','customer','items','subtotal','delivery','total','payment','status','createdAt'])
+        && d.keys().hasOnly(['orderNo','customer','items','subtotal','delivery','total','payment','status','createdAt','uid','email'])
+        && d.orderNo is string && d.orderNo.size() <= 20
+        && d.status == 'new'
+        && d.payment in ['mpesa','card','cod']
+        && d.items is list && d.items.size() > 0 && d.items.size() <= 30
+        && d.customer is map
+        && d.customer.keys().hasOnly(['name','phone','address','area'])
+        && d.customer.name is string && d.customer.name.size() > 0 && d.customer.name.size() <= 80
+        && d.customer.phone is string && d.customer.phone.size() <= 20
+        && d.customer.address is string && d.customer.address.size() <= 200
+        && d.subtotal is number && d.subtotal >= 0
+        && d.delivery is number && d.delivery >= 0
+        && d.total is number && d.total > 0
+        && d.total == d.subtotal + d.delivery
+        && d.createdAt == request.time
+        && (!('uid' in d) || d.uid == null || (request.auth != null && d.uid == request.auth.uid))
+        && (!('email' in d) || d.email == null || (request.auth != null && d.email == request.auth.token.email));
+    }
+
+    /* Customer profile: users/{uid}. A customer can write their own profile
+       but can never change the "blocked" flag. Only the admin can. */
+    function validProfile() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['email','name','lastLogin','createdAt','acct','blocked'])
+        && (!('email' in d) || d.email == request.auth.token.email)
+        && (!('name' in d) || (d.name is string && d.name.size() <= 80))
+        && (!('acct' in d) || d.acct is map);
+    }
+
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /orders/{id} {
+      allow create: if validOrder();
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid) && validProfile() && !('blocked' in request.resource.data);
+      allow update: if isAdmin()
+        || (isOwner(uid) && validProfile()
+            && request.resource.data.get('blocked', false) == resource.data.get('blocked', false));
+      allow delete: if isAdmin();
+    }
+
+    match /expenses/{id} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
