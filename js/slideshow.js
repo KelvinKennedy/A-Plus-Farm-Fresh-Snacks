@@ -8,7 +8,7 @@
   'use strict';
 
   /* ---- Settings ---------------------------------------------------------- */
-  var FOLDER = 'slides';   // where the photos live
+  var FOLDER = 'images/';   // where the photos live
   var DELAY  = 3000;               // time each snack stays on screen (ms)
   var SLIDE_TIME = 600;            // how long the slide movement takes (ms)
 
