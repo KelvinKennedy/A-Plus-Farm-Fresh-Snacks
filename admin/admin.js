@@ -999,6 +999,14 @@ function userOrderStats(u) {
 
 const isAdminUser = (u) => u.isAdmin === true;
 
+/* Accounts kept out of the Users tab for everyone, including themselves.
+   Lowercase emails. This is cosmetic: the profile still exists in Firestore. */
+const HIDDEN_FROM_USERS = ['ototokelvin180@gmail.com'];
+
+function visibleUsers() {
+  return users.filter((u) => !HIDDEN_FROM_USERS.includes(String(u.email || '').toLowerCase()));
+}
+
 function userStatusTag(u) {
   if (isAdminUser(u)) return '<span class="tag">Admin</span>';
   return u.blocked ? '<span class="tag off">Blocked</span>' : '<span class="tag">Active</span>';
@@ -1029,25 +1037,24 @@ function userRowHTML(u) {
     </tr>`;
 }
 
-function usersTableHTML(list) {
-  if (!list.length) {
-    return '<div class="panel mut">No users yet. Customers appear here when they create an account or next sign in.</div>';
-  }
+function usersTableHTML(list, emptyText) {
+  if (!list.length) return `<div class="panel mut">${emptyText}</div>`;
   return `
     <div class="tw">
       <table>
         <thead>
           <tr><th>User</th><th>Joined</th><th>Last seen</th><th class="tr">Orders</th><th class="tr">Spent</th><th>Status</th><th></th></tr>
         </thead>
-        <tbody id="ubody">${list.map(userRowHTML).join('')}</tbody>
+        <tbody class="ubody">${list.map(userRowHTML).join('')}</tbody>
       </table>
-    </div>
-    <p class="mut">Block stops a user from signing in to the shop. Remove deletes their profile here only; to erase the login completely, delete it in Firebase console > Authentication. Users appear here after their next sign-in.</p>`;
+    </div>`;
 }
 
 function usersView() {
   /* most recently seen first */
-  const list = [...users].sort((x, y) => (toDate(y.lastLogin) || 0) - (toDate(x.lastLogin) || 0));
+  const all = visibleUsers().sort((x, y) => (toDate(y.lastLogin) || 0) - (toDate(x.lastLogin) || 0));
+  const admins = all.filter(isAdminUser);
+  const list = all.filter((u) => !isAdminUser(u)); /* customers only */
   const monthAgo = Date.now() - 30 * DAY_MS;
   const active = list.filter((u) => {
     const seen = toDate(u.lastLogin);
@@ -1058,18 +1065,26 @@ function usersView() {
   $('#view').innerHTML = `
     <div class="top"><h2>Users</h2><button class="b ghost" data-act="ucsv">Download CSV</button></div>
     <div class="stats">
-      <div class="stat"><b>${list.length}</b><span>Registered users</span></div>
+      <div class="stat"><b>${list.length}</b><span>Registered customers</span></div>
       <div class="stat"><b>${active}</b><span>Active in last 30 days</span></div>
       <div class="stat"><b>${blocked}</b><span>Blocked</span></div>
+      <div class="stat"><b>${admins.length}</b><span>Admins</span></div>
     </div>
     <input class="f" id="usearch" type="search" placeholder="Search by name or email" aria-label="Search users" style="margin-bottom:12px">
-    ${usersTableHTML(list)}`;
+
+    <h3 class="usec" id="uadmins-h">Admins <span class="mut">(${admins.length})</span></h3>
+    <div id="uadmins">${usersTableHTML(admins, 'No admin profiles yet. An admin appears here after signing in to this page.')}</div>
+
+    <h3 class="usec" style="margin-top:28px">Customers <span class="mut">(${list.length})</span></h3>
+    <div id="ucust">${usersTableHTML(list, 'No customers yet. They appear here when they create an account or next sign in.')}</div>
+    <p class="mut">Block stops a customer from signing in to the shop. Remove deletes their profile here only; to erase the login completely, delete it in Firebase console &gt; Authentication. Customers appear here after their next sign-in. Admins cannot be blocked or removed here.</p>`;
 }
 
 function usersCsv() {
   downloadCsv('users.csv', [
-    ['Name', 'Email', 'Joined', 'Last seen', 'Orders', 'Status'],
-    ...users.map((u) => [
+    ['Role', 'Name', 'Email', 'Joined', 'Last seen', 'Orders', 'Status'],
+    ...visibleUsers().map((u) => [
+      isAdminUser(u) ? 'admin' : 'customer',
       u.name,
       u.email,
       shortDate(u.createdAt),
@@ -1098,7 +1113,7 @@ function toggleBlockUser(id) {
 /* Hide the rows that do not match what is typed in the search box */
 function filterUserRows(text) {
   const q = text.trim().toLowerCase();
-  document.querySelectorAll('#ubody tr').forEach((row) => {
+  document.querySelectorAll('.ubody tr').forEach((row) => {
     row.hidden = q && !row.dataset.q.includes(q);
   });
 }
